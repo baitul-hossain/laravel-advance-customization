@@ -1,0 +1,17 @@
+1. Make a file on any folder app/ or somewhere else name it custom_functions.php.
+2. on composer.json add the file like this.
+
+		"autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        },
+        "files": [
+            "app/custom_functions.php"
+        ],
+        "classmap": [
+            "database/seeds",
+            "database/factories"
+        ]
+    },
+
+3. Run command composer dump-autoload

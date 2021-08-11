@@ -1,0 +1,32 @@
+-------------------MIDDLEWARE---------------------
+--------------------------------------------------
+
+<?php
+
+namespace App\Http\Middleware;
+
+use Illuminate\Http\Request;
+use Illuminate\Routing\Route;
+use Illuminate\Routing\Matching\ValidatorInterface;
+
+class CaseInsensitiveRoute implements ValidatorInterface
+{
+  public function matches(Route $route, Request $request)
+  {
+    $path = $request->path() == '/' ? '/' : '/'.$request->path();
+    return preg_match(preg_replace('/$/','i', $route->getCompiled()->getRegex()), rawurldecode($path));
+  }
+}
+
+-------------------------WEB.PHP---------------------
+-----------------------------------------------------
+
+use Illuminate\Routing\Route as IlluminateRoute;
+use App\Http\Middleware\CaseInsensitiveRoute;
+use Illuminate\Routing\Matching\UriValidator;
+
+$validators = IlluminateRoute::getValidators();
+$validators[] = new CaseInsensitiveRoute;
+IlluminateRoute::$validators = array_filter($validators, function($validator) { 
+  return get_class($validator) != UriValidator::class;
+});
